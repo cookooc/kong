@@ -1,10 +1,11 @@
 local BasePlugin = require "kong.plugins.base_plugin"
 
 
-local re_find         = ngx.re.find
-local concat          = table.concat
-local tostring        = tostring
-local ipairs          = ipairs
+local kong     = kong
+local re_find  = ngx.re.find
+local concat   = table.concat
+local tostring = tostring
+local ipairs   = ipairs
 
 
 local NO_CONTENT = 204
@@ -14,7 +15,7 @@ local CorsHandler = BasePlugin:extend()
 
 
 CorsHandler.PRIORITY = 2000
-CorsHandler.VERSION = "0.1.0"
+CorsHandler.VERSION = "1.0.0"
 
 
 local function configure_origin(conf)
@@ -143,7 +144,8 @@ end
 function CorsHandler:header_filter(conf)
   CorsHandler.super.header_filter(self)
 
-  if kong.ctx.plugin.skip_response_headers then
+  if kong.response.get_source() ~= "service" or
+     kong.ctx.plugin.skip_response_headers then
     return
   end
 
