@@ -44,7 +44,7 @@ local CorrelationIdHandler = BasePlugin:extend()
 
 
 CorrelationIdHandler.PRIORITY = 1
-CorrelationIdHandler.VERSION = "0.2.0"
+CorrelationIdHandler.VERSION = "1.0.0"
 
 
 function CorrelationIdHandler:new()
@@ -79,6 +79,10 @@ end
 
 function CorrelationIdHandler:header_filter(conf)
   CorrelationIdHandler.super.header_filter(self)
+
+  if kong.response.get_source() ~= "service" then
+    return
+  end
 
   local header_value = kong.ctx.plugin.correlationid_header_value
 
